@@ -1,6 +1,7 @@
 package hr.java.spring.boot.HardwareJPA.controller;
 
 import hr.java.spring.boot.HardwareJPA.dto.HardwareDTO;
+import hr.java.spring.boot.HardwareJPA.dto.HardwareFilterParams;
 import hr.java.spring.boot.HardwareJPA.dto.HardwareRequestDTO;
 import hr.java.spring.boot.HardwareJPA.dto.NewHardwareResponseDTO;
 import hr.java.spring.boot.HardwareJPA.service.HardwareService;
@@ -50,10 +51,10 @@ public class HardwareController {
     }
 
     //NIJE IMPLEMENTIRANO
-//    @GetMapping("/filter")
-//    public ResponseEntity<List<HardwareDTO>> filterHardware(HardwareFilterParams params) {
-//        return ResponseEntity.ok(hardwareService.filterHardware(params));
-//    }
+    @GetMapping("/filter")
+    public ResponseEntity<List<HardwareDTO>> filterHardware(HardwareFilterParams params) {
+        return ResponseEntity.ok(hardwareService.filterHardware(params));
+    }
     // http://localhost:8081/hardware/filter?naziv=ryzen
 
 
@@ -79,6 +80,11 @@ public class HardwareController {
 //
 //DELETE
 //curl -X DELETE http://localhost:8081/hardware/<uuid> -v
+//
+//FILTRIRANJE
+//curl --get http://localhost:8081/hardware/filter --data-urlencode "minCijena=200" --data-urlencode "maxCijena=700"
+//curl --get http://localhost:8081/hardware/filter --data-urlencode "minCijena=200" --data-urlencode "maxCijena=700" --data-urlencode "naziv=x87"
+//curl --get http://localhost:8081/hardware/filter --data-urlencode "minCijena=200" --data-urlencode "maxCijena=700" --data-urlencode "kategorije=MBO"
 
 
 

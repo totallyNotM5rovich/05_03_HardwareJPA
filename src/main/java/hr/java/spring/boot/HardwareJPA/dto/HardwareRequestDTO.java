@@ -11,7 +11,7 @@ public class HardwareRequestDTO {
     private String naziv;
     @PositiveOrZero(message = "Cijena ne moze biti negativna!")
     private BigDecimal cijena;
-    @Pattern(regexp = "CPU|GPU|MBO|RAM|STORAGE|OTHER", message = "Moguca vrijednost tipa je jedna od sljedecih vrijednosti: 'Procesor', 'Graficka kartica', 'Maticna ploca', 'Radna memorija', 'Pohrana podataka' ili 'Ostalo'")
+    @Pattern(regexp = "CPU|GPU|MBO|RAM|STORAGE|OTHER", message = "Moguca vrijednost tipa je jedna od sljedecih vrijednosti: 'CPU', 'GPU', 'MBO', 'RAM', 'STORAGE' ili 'OTHER'")
     @NotBlank(message = "Tip je obavezan podatak!")
     private String tip;
 

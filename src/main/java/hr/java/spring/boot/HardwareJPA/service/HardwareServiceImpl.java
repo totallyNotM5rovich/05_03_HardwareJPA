@@ -2,12 +2,14 @@ package hr.java.spring.boot.HardwareJPA.service;
 
 import hr.java.spring.boot.HardwareJPA.domain.Hardware;
 import hr.java.spring.boot.HardwareJPA.dto.HardwareDTO;
+import hr.java.spring.boot.HardwareJPA.dto.HardwareFilterParams;
 import hr.java.spring.boot.HardwareJPA.dto.HardwareRequestDTO;
 import hr.java.spring.boot.HardwareJPA.dto.NewHardwareResponseDTO;
 import hr.java.spring.boot.HardwareJPA.repository.SpringDataHardwareRepository;
 import hr.java.spring.boot.HardwareJPA.repository.SpringDataTipRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,11 +54,25 @@ public class HardwareServiceImpl implements HardwareService{
 //        hardwareRepository.updateHardware(uuid, new Hardware(updatedHardware));
     }
 
-//    @Override
-//    public List<HardwareDTO> filterHardware(HardwareFilterParams params) {
-//        return hardwareRepository.filterHardware(params).stream().map(this::convertToDTO).toList();
-//        return null;
-//    }
+    @Override
+    public List<HardwareDTO> filterHardware(HardwareFilterParams params) {
+        List<Hardware> listaHw = hardwareRepository.findAll();
+        if(params.getNaziv() != null) {
+            listaHw = listaHw.stream().filter(hw -> hw.getNaziv().toLowerCase().contains(params.getNaziv().toLowerCase())).toList();
+        }
+        if(params.getMinCijena() != null && params.getMaxCijena() != null) {
+            listaHw = listaHw.stream().filter(hw -> hw.getCijena().compareTo(params.getMinCijena()) >= 0 && hw.getCijena().compareTo(params.getMaxCijena()) <= 0).toList();
+        } else if (params.getMinCijena() != null) {
+            listaHw = listaHw.stream().filter(hw -> hw.getCijena().compareTo(params.getMinCijena()) >= 0).toList();
+        } else if (params.getMaxCijena() != null) {
+            listaHw = listaHw.stream().filter(hw ->  hw.getCijena().compareTo(params.getMaxCijena()) <= 0).toList();
+        }
+        if(params.getKategorije() != null) {
+            listaHw = listaHw.stream().filter(hw -> params.getKategorije().contains(hw.getTip().getNaziv())).toList();
+        }
+
+        return listaHw.stream().map(this::convertToDTO).toList();
+    }
 
     @Override
     public void deleteHardware(String uuid) {
