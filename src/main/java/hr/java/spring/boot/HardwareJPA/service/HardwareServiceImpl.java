@@ -2,30 +2,34 @@ package hr.java.spring.boot.HardwareJPA.service;
 
 import hr.java.spring.boot.HardwareJPA.domain.Hardware;
 import hr.java.spring.boot.HardwareJPA.dto.HardwareDTO;
-import hr.java.spring.boot.HardwareJPA.dto.HardwareFilterParams;
 import hr.java.spring.boot.HardwareJPA.dto.HardwareRequestDTO;
 import hr.java.spring.boot.HardwareJPA.dto.NewHardwareResponseDTO;
-import hr.java.spring.boot.HardwareJPA.repository.HardwareRepository;
+import hr.java.spring.boot.HardwareJPA.repository.SpringDataHardwareRepository;
+import hr.java.spring.boot.HardwareJPA.repository.SpringDataTipRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class HardwareServiceImpl implements HardwareService{
-    private HardwareRepository hardwareRepository;
+    private SpringDataHardwareRepository hardwareRepository;
+    private SpringDataTipRepository tipRepository;
 
-    public HardwareServiceImpl(HardwareRepository hardwareRepository) {
+    public HardwareServiceImpl(SpringDataHardwareRepository hardwareRepository, SpringDataTipRepository tipRepository) {
         this.hardwareRepository = hardwareRepository;
+        this.tipRepository = tipRepository;
     }
 
     @Override
     public List<HardwareDTO> getAllHardware() {
-        return hardwareRepository.getAllHardware().stream().map(this::convertToDTO).toList();
+        return hardwareRepository.findAll().stream().map(this::convertToDTO).toList();
     }
 
     @Override
     public HardwareDTO getHardwareByUUID(String uuid) {
-        return convertToDTO(hardwareRepository.getHardwareByUUID(uuid));
+        return convertToDTO(hardwareRepository.findBySifra(uuid));
     }
 
     private HardwareDTO convertToDTO(Hardware hardware) {
@@ -34,26 +38,46 @@ public class HardwareServiceImpl implements HardwareService{
 
     @Override
     public NewHardwareResponseDTO addNewHardware(HardwareRequestDTO newHardware) {
-        return new NewHardwareResponseDTO(hardwareRepository.addNewHardware(new Hardware(newHardware)));
+        Hardware newHw = hardwareRepository.save(mapHardwareRequestDTOToHardware(newHardware));
+        return new NewHardwareResponseDTO(newHw.getSifra());
     }
 
     @Override
     public void updateHardware(String uuid, HardwareRequestDTO updatedHardware) {
-        hardwareRepository.updateHardware(uuid, new Hardware(updatedHardware));
+        Hardware hw = hardwareRepository.findBySifra(uuid);
+        hw.setNaziv(updatedHardware.getNaziv());
+        hw.setCijena(updatedHardware.getCijena());
+        hw.setTip(tipRepository.findByNaziv(updatedHardware.getTip()));
+        hardwareRepository.save(hw);
+//        hardwareRepository.updateHardware(uuid, new Hardware(updatedHardware));
     }
 
-    @Override
-    public List<HardwareDTO> filterHardware(HardwareFilterParams params) {
-        return hardwareRepository.filterHardware(params).stream().map(this::convertToDTO).toList();
-    }
+//    @Override
+//    public List<HardwareDTO> filterHardware(HardwareFilterParams params) {
+//        return hardwareRepository.filterHardware(params).stream().map(this::convertToDTO).toList();
+//        return null;
+//    }
 
     @Override
     public void deleteHardware(String uuid) {
-        hardwareRepository.deleteHardware(uuid);
+        Hardware hw = hardwareRepository.findBySifra(uuid);
+        hardwareRepository.delete(hw);
+//        hardwareRepository.deleteHardware(uuid);
     }
 
     @Override
     public boolean hardwareExists(String uuid) {
-        return hardwareRepository.hardwareExists(uuid);
+//        return hardwareRepository.hardwareExists(uuid);
+        return hardwareRepository.existsBySifra(uuid);
+    }
+
+    private Hardware mapHardwareRequestDTOToHardware(HardwareRequestDTO hardwareRequest) {
+        Hardware hw = new Hardware();
+        hw.setNaziv(hardwareRequest.getNaziv());
+        hw.setSifra(UUID.randomUUID().toString());
+        hw.setCijena(hardwareRequest.getCijena());
+        hw.setKolicina(0);
+        hw.setTip(tipRepository.findByNaziv(hardwareRequest.getTip()));
+        return hw;
     }
 }

@@ -1,10 +1,9 @@
 package hr.java.spring.boot.HardwareJPA.controller;
 
-import hr.java.spring.boot.HardwareH2DB.dto.HardwareDTO;
-import hr.java.spring.boot.HardwareH2DB.dto.HardwareFilterParams;
-import hr.java.spring.boot.HardwareH2DB.dto.HardwareRequestDTO;
-import hr.java.spring.boot.HardwareH2DB.dto.NewHardwareResponseDTO;
-import hr.java.spring.boot.HardwareH2DB.service.HardwareService;
+import hr.java.spring.boot.HardwareJPA.dto.HardwareDTO;
+import hr.java.spring.boot.HardwareJPA.dto.HardwareRequestDTO;
+import hr.java.spring.boot.HardwareJPA.dto.NewHardwareResponseDTO;
+import hr.java.spring.boot.HardwareJPA.service.HardwareService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,10 +49,11 @@ public class HardwareController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/filter")
-    public ResponseEntity<List<HardwareDTO>> filterHardware(HardwareFilterParams params) {
-        return ResponseEntity.ok(hardwareService.filterHardware(params));
-    }
+    //NIJE IMPLEMENTIRANO
+//    @GetMapping("/filter")
+//    public ResponseEntity<List<HardwareDTO>> filterHardware(HardwareFilterParams params) {
+//        return ResponseEntity.ok(hardwareService.filterHardware(params));
+//    }
     // http://localhost:8081/hardware/filter?naziv=ryzen
 
 
@@ -63,13 +63,22 @@ public class HardwareController {
 //    }
 }
 
-// "Content-Type: application/json"
-// {"cijena":669.99,"naziv":"KINGSTON Fury Beast KF560C30BBE-32 DDR5","tip":"Radna memorija"}
+//TEST:
+//
+//GET (dohvacanje svih)
+//curl http://localhost:8081/hardware
+//
+//GET (dohvacanje po sifri)
+//curl http://localhost:8081/hardware/d65d77d4-1fdd-4e09-89d1-1c917d31dd80
+//
+//POST
+//curl -X POST http://localhost:8081/hardware/new -H "Content-Type: application/json" -d '{"cijena":669.99,"naziv":"KINGSTON Fury Beast KF560C30BBE-32 DDR5","tip":"RAM"}'
+//
+//PUT
+//curl -X PUT http://localhost:8081/hardware/<uuid> -H "Content-Type: application/json" -d '{"cijena":679.99,"naziv":"KINGSTON Fury Beast KF560C30BBE-32 DDR5","tip":"RAM"}'
+//
+//DELETE
+//curl -X DELETE http://localhost:8081/hardware/<uuid> -v
 
-//Proširiti rješenje iz treće vježbe te umjesto "MockHardwareRepository" implementacije dodati novu implementaciju repozitorija koja će koristiti JdbcTemplate te H2 "in memory" baze podataka.
-//Pomoću anotacije "@Primary" potrebno je proglasiti novu implementaciju repozitorija primarnim.
-//        U "pom.xml" dodati ovisnosti o "spring-boot-starter-jdbc" i "h2"
-//Domensku klasu "Hardware" proširiti s dodatnim identifikatorom "Long id" koji će generirati baza podataka.
-//Kreirati datoteke "data.sql" i "schema.sql" i u nju dodati SQL naredbe koje će kreirati table u bazi podataka te spremiti podatke u odgovarajuće tablice.
 
 

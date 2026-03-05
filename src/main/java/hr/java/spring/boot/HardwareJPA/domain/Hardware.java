@@ -1,16 +1,20 @@
 package hr.java.spring.boot.HardwareJPA.domain;
 
 
-import hr.java.spring.boot.HardwareJPA.dto.HardwareRequestDTO;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-
+@Entity
 public class Hardware {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String naziv;
     private String sifra;
+    @ManyToOne
+    @JoinColumn(name = "tipId")
     private Tip tip;
     private BigDecimal cijena;
     private int kolicina;
@@ -33,14 +37,6 @@ public class Hardware {
         this.cijena = cijena;
         this.kolicina = kolicina;
         this.sifra = UUID.randomUUID().toString();
-    }
-
-    public Hardware(HardwareRequestDTO hardwareRequest) {
-        this.naziv = hardwareRequest.getNaziv();
-        this.tip = Tip.getTip(hardwareRequest.getTip());
-        this.cijena = hardwareRequest.getCijena();
-        this.sifra = UUID.randomUUID().toString();
-        this.kolicina = 0;
     }
 
     public String getNaziv() {

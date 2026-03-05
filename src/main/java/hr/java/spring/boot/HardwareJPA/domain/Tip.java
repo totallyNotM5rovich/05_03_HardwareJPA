@@ -1,13 +1,30 @@
 package hr.java.spring.boot.HardwareJPA.domain;
 
-public enum Tip {
-    CPU("Procesor",1), GPU("Graficka kartica",2), MBO("Maticna ploca",3), RAM("Radna memorija",4), STORAGE("Pohrana podataka",5), OTHER("Ostalo",6);
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-    private final String naziv;
-    private final int id;
+@Entity
+public class Tip {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String naziv;
 
-    Tip(String naziv, int id) {
+    public Tip() {
+    }
+
+    public Tip(Long id, String naziv) {
+        this.id = id;
         this.naziv = naziv;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -15,21 +32,7 @@ public enum Tip {
         return naziv;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public static Tip getTip(String naziv) {
-        for (Tip value : Tip.values()) {
-            if (naziv.equalsIgnoreCase(value.getNaziv())) return value;
-        }
-        return Tip.OTHER;
-    }
-
-    public static Tip getTip(int id) {
-        for (Tip value : Tip.values()) {
-            if (id == value.getId()) return value;
-        }
-        return Tip.OTHER;
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
     }
 }

@@ -20,5 +20,5 @@ public interface HardwareService {
 
     boolean hardwareExists(String uuid);
 
-    List<HardwareDTO> filterHardware(HardwareFilterParams params);
+//    List<HardwareDTO> filterHardware(HardwareFilterParams params);
 }
