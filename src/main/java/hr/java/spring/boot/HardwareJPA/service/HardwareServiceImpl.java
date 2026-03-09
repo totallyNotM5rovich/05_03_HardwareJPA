@@ -7,6 +7,8 @@ import hr.java.spring.boot.HardwareJPA.dto.HardwareRequestDTO;
 import hr.java.spring.boot.HardwareJPA.dto.NewHardwareResponseDTO;
 import hr.java.spring.boot.HardwareJPA.repository.SpringDataHardwareRepository;
 import hr.java.spring.boot.HardwareJPA.repository.SpringDataTipRepository;
+import hr.java.spring.boot.HardwareJPA.specification.HardwareSpecificationBuilder;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +28,7 @@ public class HardwareServiceImpl implements HardwareService{
 
     @Override
     public List<HardwareDTO> getAllHardware() {
-        return hardwareRepository.findAll().stream().map(this::convertToDTO).toList();
+        return hardwareRepository.findAllByOrderByNazivAsc().stream().map(this::convertToDTO).toList();
     }
 
     @Override
@@ -54,31 +56,41 @@ public class HardwareServiceImpl implements HardwareService{
 //        hardwareRepository.updateHardware(uuid, new Hardware(updatedHardware));
     }
 
+//    @Override
+//    public List<HardwareDTO> filterHardware(HardwareFilterParams params) {
+//        List<Hardware> listaHw = hardwareRepository.findAll();
+//        if(params.getNaziv() != null) {
+//            listaHw = listaHw.stream().filter(hw -> hw.getNaziv().toLowerCase().contains(params.getNaziv().toLowerCase())).toList();
+//        }
+//        if(params.getMinCijena() != null && params.getMaxCijena() != null) {
+//            listaHw = listaHw.stream().filter(hw -> hw.getCijena().compareTo(params.getMinCijena()) >= 0 && hw.getCijena().compareTo(params.getMaxCijena()) <= 0).toList();
+//        } else if (params.getMinCijena() != null) {
+//            listaHw = listaHw.stream().filter(hw -> hw.getCijena().compareTo(params.getMinCijena()) >= 0).toList();
+//        } else if (params.getMaxCijena() != null) {
+//            listaHw = listaHw.stream().filter(hw ->  hw.getCijena().compareTo(params.getMaxCijena()) <= 0).toList();
+//        }
+//        if(params.getKategorije() != null) {
+//            listaHw = listaHw.stream().filter(hw -> params.getKategorije().contains(hw.getTip().getNaziv())).toList();
+//        }
+//
+//        return listaHw.stream().map(this::convertToDTO).toList();
+//    }
+
+
     @Override
     public List<HardwareDTO> filterHardware(HardwareFilterParams params) {
-        List<Hardware> listaHw = hardwareRepository.findAll();
-        if(params.getNaziv() != null) {
-            listaHw = listaHw.stream().filter(hw -> hw.getNaziv().toLowerCase().contains(params.getNaziv().toLowerCase())).toList();
-        }
-        if(params.getMinCijena() != null && params.getMaxCijena() != null) {
-            listaHw = listaHw.stream().filter(hw -> hw.getCijena().compareTo(params.getMinCijena()) >= 0 && hw.getCijena().compareTo(params.getMaxCijena()) <= 0).toList();
-        } else if (params.getMinCijena() != null) {
-            listaHw = listaHw.stream().filter(hw -> hw.getCijena().compareTo(params.getMinCijena()) >= 0).toList();
-        } else if (params.getMaxCijena() != null) {
-            listaHw = listaHw.stream().filter(hw ->  hw.getCijena().compareTo(params.getMaxCijena()) <= 0).toList();
-        }
-        if(params.getKategorije() != null) {
-            listaHw = listaHw.stream().filter(hw -> params.getKategorije().contains(hw.getTip().getNaziv())).toList();
-        }
+        Specification<Hardware> specification = Specification.where(HardwareSpecificationBuilder.containsNaziv(params.getNaziv()))
+                .and(HardwareSpecificationBuilder.minCijena(params.getMinCijena()))
+                .and(HardwareSpecificationBuilder.maxCijena(params.getMaxCijena()))
+                .and(HardwareSpecificationBuilder.kategorije(params.getKategorije()));
 
-        return listaHw.stream().map(this::convertToDTO).toList();
+        return hardwareRepository.findAll(specification).stream().map(this::convertToDTO).toList();
     }
 
     @Override
     public void deleteHardware(String uuid) {
         Hardware hw = hardwareRepository.findBySifra(uuid);
         hardwareRepository.delete(hw);
-//        hardwareRepository.deleteHardware(uuid);
     }
 
     @Override

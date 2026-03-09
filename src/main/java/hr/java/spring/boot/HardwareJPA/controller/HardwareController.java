@@ -50,7 +50,6 @@ public class HardwareController {
         return ResponseEntity.noContent().build();
     }
 
-    //NIJE IMPLEMENTIRANO
     @GetMapping("/filter")
     public ResponseEntity<List<HardwareDTO>> filterHardware(HardwareFilterParams params) {
         return ResponseEntity.ok(hardwareService.filterHardware(params));
@@ -58,10 +57,10 @@ public class HardwareController {
     // http://localhost:8081/hardware/filter?naziv=ryzen
 
 
-//    @GetMapping("/brew-coffee")
-//    public ResponseEntity<String> brewCoffee() {
-//        return new ResponseEntity<>("I'm a teapot", HttpStatus.I_AM_A_TEAPOT);
-//    }
+    @GetMapping("/brew-coffee")
+    public ResponseEntity<String> brewCoffee() {
+        return new ResponseEntity<>("I'm a teapot", HttpStatus.I_AM_A_TEAPOT);
+    }
 }
 
 //TEST:
@@ -85,6 +84,7 @@ public class HardwareController {
 //curl --get http://localhost:8081/hardware/filter --data-urlencode "minCijena=200" --data-urlencode "maxCijena=700"
 //curl --get http://localhost:8081/hardware/filter --data-urlencode "minCijena=200" --data-urlencode "maxCijena=700" --data-urlencode "naziv=x87"
 //curl --get http://localhost:8081/hardware/filter --data-urlencode "minCijena=200" --data-urlencode "maxCijena=700" --data-urlencode "kategorije=MBO"
+//curl --get http://localhost:8081/hardware/filter --data-urlencode "minCijena=200" --data-urlencode "maxCijena=700" --data-urlencode "kategorije=CPU" --data-urlencode "kategorije=MBO"
 
 
 
